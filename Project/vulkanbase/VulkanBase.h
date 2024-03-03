@@ -122,6 +122,13 @@ private:
 	Shader m_Shader{"shader", "shader"};
 	Renderer renderer{};
 
+	// temp
+	const std::vector<Vertex> vertices{
+		{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+		{{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+		{{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
+	};
+
 	GLFWwindow* window;
 	void initWindow();
 	

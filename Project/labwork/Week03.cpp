@@ -111,7 +111,7 @@ void VulkanBase::createGraphicsPipeline() {
 	}
 
 	VkGraphicsPipelineCreateInfo pipelineInfo{};
-	const auto inputState{ m_Shader.CreateVertexInputStateInfo() };
+	const auto vertexInputInfo{ m_Shader.CreateVertexInputStateInfo() };
 	const auto assemblyState{ m_Shader.CreateInputAssemblyStateInfo() };
 
 
@@ -119,7 +119,7 @@ void VulkanBase::createGraphicsPipeline() {
 
 	pipelineInfo.stageCount = 2;
 	pipelineInfo.pStages = m_Shader.GetShaderStages().data();
-	pipelineInfo.pVertexInputState = &inputState;
+	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	pipelineInfo.pInputAssemblyState = &assemblyState;
 
 	pipelineInfo.pViewportState = &viewportState;

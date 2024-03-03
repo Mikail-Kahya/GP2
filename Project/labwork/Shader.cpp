@@ -56,9 +56,16 @@ VkPipelineShaderStageCreateInfo Shader::CreateFragmentShaderInfo(const VkDevice&
 VkPipelineVertexInputStateCreateInfo Shader::CreateVertexInputStateInfo() const
 {
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
+
+	auto bindingDescription{ Vertex::GetBindingDescription() };
+	auto attributeDescription{ Vertex::GetAttributeDescriptions() };
+
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	vertexInputInfo.vertexBindingDescriptionCount = 0;
-	vertexInputInfo.vertexAttributeDescriptionCount = 0;
+	vertexInputInfo.vertexBindingDescriptionCount = 1;
+	vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescription.size());
+	vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+	vertexInputInfo.pVertexAttributeDescriptions = attributeDescription.data;
+
 	return vertexInputInfo;
 }
 
