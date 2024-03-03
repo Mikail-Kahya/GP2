@@ -113,44 +113,17 @@ private:
 		glfwTerminate();
 	}
 
-	
-
-	
-
 	void createSurface() {
 		if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create window surface!");
 		}
 	}
 
-	
-
-	// Week 01: 
-	// Actual window
-	// simple fragment + vertex shader creation functions
-	// These 5 functions should be refactored into a separate C++ class
-	// with the correct internal state.
-
 	Shader m_Shader{"shader", "shader"};
+	Renderer renderer{};
 
 	GLFWwindow* window;
 	void initWindow();
-
-	//void drawScene();
-
-	// Week 02
-	// Queue families
-	// CommandBuffer concept
-
-	//VkCommandPool commandPool;
-	//VkCommandBuffer commandBuffer;
-	//
-	//QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-
-	//void drawFrame(uint32_t imageIndex);
-	//void createCommandBuffer();
-	//void createCommandPool(); 
-	//void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 	
 	// Week 03
 	// Renderpass concept
@@ -160,8 +133,6 @@ private:
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
 	VkRenderPass renderPass;
-
-	Renderer renderer{};
 
 	void createFrameBuffers();
 	void createRenderPass();
