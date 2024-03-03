@@ -29,3 +29,5 @@ void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT
 std::vector<char> readFile(const std::string& filename);
 
 QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface, VkQueueFlagBits queueFlagBit = VK_QUEUE_GRAPHICS_BIT);
+
+uint32_t FindMemoryType(VkPhysicalDevice device, uint32_t typeFilter, VkMemoryPropertyFlags properties);

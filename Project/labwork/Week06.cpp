@@ -45,7 +45,7 @@ void VulkanBase::drawFrame() {
 
 	//vkResetCommandBuffer(commandBuffer, /*VkCommandBufferResetFlagBits*/ 0);
 	//recordCommandBuffer(commandBuffer, imageIndex);
-	renderer.RecordCommand(imageIndex);
+	renderer.RecordCommand(imageIndex, vertices);
 
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

@@ -6,11 +6,12 @@
 Renderer::~Renderer()
 {
 	vkDestroyCommandPool(m_Device, m_CommandPool, nullptr);
+	vkFreeMemory(m_Device, m_VertexBufferMemory, nullptr);
 }
 
-void Renderer::Init(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
+void Renderer::Init(VkSurfaceKHR surface)
 {
-	CreateCommandPool(physicalDevice, surface);
+	CreateCommandPool(surface);
 	CreateCommandBuffer();
 }
 
@@ -18,18 +19,29 @@ void Renderer::Init(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkDev
 	const std::vector<VkFramebuffer>& swapChain, VkExtent2D swapChainExtent, VkPipeline graphicsPipeline)
 {
 	m_Device = device;
+	m_PhysicalDevice = physicalDevice;
 	m_RenderPass = renderPass;
 	m_SwapChainPtr = &swapChain;
 	m_SwapChainExtent = swapChainExtent;
 	m_GraphicsPipeline = graphicsPipeline;
 
-	Init(physicalDevice, surface);
+	Init(surface);
 }
 
-void Renderer::RecordCommand(uint32_t imageIdx)
+void Renderer::RecordCommand(uint32_t imageIdx, const std::vector<Vertex>& vertices)
 {
+	vkDestroyBuffer(m_Device, m_VertexBuffer, nullptr);
 	vkResetCommandBuffer(m_CommandBuffer, /*VkCommandBufferResetFlagBits*/ 0);
+
 	RecordDrawFrame(imageIdx);
+
+	vkCmdBindPipeline(m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
+
+	VkBuffer vertexBuffers[] = { m_VertexBuffer };
+	VkDeviceSize offsets[] = { 0 };
+	vkCmdBindVertexBuffers(m_CommandBuffer, 0, 1, vertexBuffers, offsets);
+
+	vkCmdDraw(m_CommandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
 }
 
 VkCommandBuffer& Renderer::GetBuffer()
@@ -37,9 +49,9 @@ VkCommandBuffer& Renderer::GetBuffer()
 	return m_CommandBuffer;
 }
 
-void Renderer::CreateCommandPool(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
+void Renderer::CreateCommandPool(VkSurfaceKHR surface)
 {
-	QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(physicalDevice, surface);
+	QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(m_PhysicalDevice, surface);
 
 	VkCommandPoolCreateInfo poolInfo{};
 	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -59,9 +71,39 @@ void Renderer::CreateCommandBuffer(VkCommandBufferLevel bufferType)
 	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	allocInfo.commandBufferCount = 1;
 
-	if (vkAllocateCommandBuffers(m_Device, &allocInfo, &m_CommandBuffer) != VK_SUCCESS) {
+	if (vkAllocateCommandBuffers(m_Device, &allocInfo, &m_CommandBuffer) != VK_SUCCESS)
 		throw std::runtime_error("failed to allocate command buffers!");
-	}
+}
+
+void Renderer::InitVertexBuffer(const std::vector<Vertex>& vertices)
+{
+	VkBufferCreateInfo bufferInfo{};
+	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+	bufferInfo.size = sizeof(Vertex) * vertices.size();
+	bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+	if (vkCreateBuffer(m_Device, &bufferInfo, nullptr, &m_VertexBuffer) != VK_SUCCESS)
+		throw std::runtime_error("Failed to create vertex buffer!");
+
+	VkMemoryRequirements memRequirements{};
+	vkGetBufferMemoryRequirements(m_Device, m_VertexBuffer, &memRequirements);
+
+	VkMemoryAllocateInfo allocInfo{};
+	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+	allocInfo.allocationSize = memRequirements.size;
+	allocInfo.memoryTypeIndex = FindMemoryType(m_PhysicalDevice, memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+
+	if (vkAllocateMemory(m_Device, &allocInfo, nullptr, &m_VertexBufferMemory) != VK_SUCCESS)
+		throw std::runtime_error("failed to allocate vertex buffer memory!");
+
+	vkBindBufferMemory(m_Device, m_VertexBuffer, m_VertexBufferMemory, 0);
+
+	// Fill vertex buffer
+	void* data;
+	vkMapMemory(m_Device, m_VertexBufferMemory, 0, bufferInfo.size, 0, &data);
+	memcpy(data, vertices.data(), (size_t)bufferInfo.size);
+	vkUnmapMemory(m_Device, m_VertexBufferMemory);
 }
 
 void Renderer::RecordDrawFrame(uint32_t imageIdx)

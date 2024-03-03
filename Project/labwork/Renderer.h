@@ -15,16 +15,18 @@ public:
 	Renderer& operator=(const Renderer& other)		= default;
 	Renderer& operator=(Renderer&& other) noexcept	= default;
 
-	void Init(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
+	void Init(VkSurfaceKHR surface);
 	void Init(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkDevice device, VkRenderPass renderPass,
 		const std::vector<VkFramebuffer>& swapChain,
 		VkExtent2D swapChainExtent, VkPipeline graphicsPipeline);
 
-	void RecordCommand(uint32_t imageIdx);
+	void InitVertexBuffer(const std::vector<Vertex>& vertices);
+
+	void RecordCommand(uint32_t imageIdx, const std::vector<Vertex>& vertices);
 	VkCommandBuffer& GetBuffer();
 
 private:
-	void CreateCommandPool(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
+	void CreateCommandPool(VkSurfaceKHR surface);
 	void CreateCommandBuffer(VkCommandBufferLevel bufferType = VK_COMMAND_BUFFER_LEVEL_PRIMARY);
 
 	void RecordDrawFrame(uint32_t imageIdx);
@@ -33,6 +35,11 @@ private:
 	void DrawScene() const;
 
 	VkDevice m_Device{};
+	VkPhysicalDevice m_PhysicalDevice{};
+
+	VkBuffer m_VertexBuffer{};
+	VkDeviceMemory m_VertexBufferMemory{};
+
 	VkCommandPool m_CommandPool{};
 	VkCommandBuffer m_CommandBuffer{};
 

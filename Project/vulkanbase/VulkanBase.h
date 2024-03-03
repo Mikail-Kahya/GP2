@@ -66,6 +66,7 @@ private:
 		createFrameBuffers();
 		// week 02
 		renderer.Init(physicalDevice, surface, device, renderPass, swapChainFramebuffers, swapChainExtent, graphicsPipeline);
+		renderer.InitVertexBuffer(vertices);
 		//createCommandPool();
 		//createCommandBuffer();
 
