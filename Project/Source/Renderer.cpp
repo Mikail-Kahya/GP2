@@ -113,15 +113,13 @@ void Renderer::RecordDrawFrame(uint32_t imageIdx)
 	beginInfo.flags = 0; // Optional
 	beginInfo.pInheritanceInfo = nullptr; // Optional
 
-	if (vkBeginCommandBuffer(m_CommandBuffer, &beginInfo) != VK_SUCCESS) {
+	if (vkBeginCommandBuffer(m_CommandBuffer, &beginInfo) != VK_SUCCESS)
 		throw std::runtime_error("failed to begin recording command buffer!");
-	}
+
 	DrawFrame(imageIdx);
 
-
-	if (vkEndCommandBuffer(m_CommandBuffer) != VK_SUCCESS) {
+	if (vkEndCommandBuffer(m_CommandBuffer) != VK_SUCCESS)
 		throw std::runtime_error("failed to record command buffer!");
-	}
 }
 
 void Renderer::DrawFrame(uint32_t imageIdx) const

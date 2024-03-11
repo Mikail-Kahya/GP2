@@ -16,9 +16,9 @@
 #include <set>
 #include <limits>
 #include <algorithm>
-#include "labwork/Shader.h"
+#include "Source/Shader.h"
 #include "Structs.h"
-#include "labwork/Renderer.h"
+#include "Source/Renderer.h"
 
 
 const std::vector<const char*> validationLayers = {

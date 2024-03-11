@@ -29,20 +29,24 @@ set(SOURCES
     "vulkanbase/VulkanBase.h" 
     "vulkanbase/VulkanUtil.h"
     # Add other source files here
-    "labwork/Week01.cpp"
+    "Source/Week01.cpp"
      
-    "labwork/Week03.cpp" 
-    "labwork/Week04.cpp" 
-    "labwork/Week05.cpp"
-    "labwork/Week06.cpp"
-    "labwork/Shader.h" 
-    "labwork/Shader.cpp"
-    "vulkanbase/Structs.h" 
-    "vulkanbase/Structs.cpp"
+    "Source/Week03.cpp" 
+    "Source/Week04.cpp" 
+    "Source/Week05.cpp"
+    "Source/Week06.cpp"
+    "Source/Shader.h" 
+    "Source/Shader.cpp"
+    "Source/Structs.h" 
+    "Source/Structs.cpp"
+    "Source/Renderer.h" 
+    "Source/Renderer.cpp"
+    "Source/Mesh.h"
+    "Source/Mesh.cpp"
 )
 
 # Create the executable
-add_executable(${PROJECT_NAME} ${SOURCES} ${GLSL_SOURCE_FILES}  "vulkanbase/VulkanUtil.cpp" "labwork/Week03.cpp"  "labwork/Renderer.h" "labwork/Renderer.cpp")
+add_executable(${PROJECT_NAME} ${SOURCES} ${GLSL_SOURCE_FILES}  "vulkanbase/VulkanUtil.cpp" )
 add_dependencies(${PROJECT_NAME} Shaders)
 # Link libraries
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
