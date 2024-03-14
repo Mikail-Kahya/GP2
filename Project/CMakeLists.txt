@@ -43,7 +43,7 @@ set(SOURCES
     "Source/Renderer.cpp"
     "Source/Mesh.h"
     "Source/Mesh.cpp"
-)
+ "Source/ResourceManager.h" "Source/RsourceManager.cpp" "Source/Singleton.h" )
 
 # Create the executable
 add_executable(${PROJECT_NAME} ${SOURCES} ${GLSL_SOURCE_FILES}  "vulkanbase/VulkanUtil.cpp" )

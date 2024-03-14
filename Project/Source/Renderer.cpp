@@ -37,11 +37,7 @@ void Renderer::RecordCommand(uint32_t imageIdx, const std::vector<Vertex>& verti
 
 	vkCmdBindPipeline(m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
 
-	VkBuffer vertexBuffers[] = { m_VertexBuffer };
-	VkDeviceSize offsets[] = { 0 };
-	vkCmdBindVertexBuffers(m_CommandBuffer, 0, 1, vertexBuffers, offsets);
-
-	vkCmdDraw(m_CommandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
+	
 }
 
 VkCommandBuffer& Renderer::GetBuffer()

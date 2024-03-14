@@ -1,5 +1,6 @@
 #include "Shader.h"
 
+#include <numeric>
 #include <stdexcept>
 
 #include "vulkanbase/VulkanUtil.h"
@@ -9,6 +10,7 @@ Shader::Shader(const std::string& vertexShaderFile, const std::string& fragmentS
 	: m_VertexShaderFile{ vertexShaderFile }
 	, m_FragmentShaderFile{ fragmentShaderFile }
 {
+	m_Hash = CalcHash(vertexShaderFile, fragmentShaderFile);
 }
 
 void Shader::Initialize(const VkDevice& vkDevice)
@@ -76,6 +78,51 @@ VkPipelineInputAssemblyStateCreateInfo Shader::CreateInputAssemblyStateInfo() co
 	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	inputAssembly.primitiveRestartEnable = VK_FALSE;
 	return inputAssembly;
+}
+
+void Shader::Start() const
+{
+	VkCommandBufferBeginInfo beginInfo{};
+	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	beginInfo.flags = 0; // Optional
+	beginInfo.pInheritanceInfo = nullptr; // Optional
+
+	if (vkBeginCommandBuffer(m_CommandBuffer, &beginInfo) != VK_SUCCESS)
+		throw std::runtime_error("failed to begin recording command buffer!");
+}
+
+void Shader::Record(const std::vector<Vertex>& vertices)
+{
+	//VkBuffer vertexBuffers[] = { m_VertexBuffer };
+	//VkDeviceSize offsets[] = { 0 };
+	//vkCmdBindVertexBuffers(m_CommandBuffer, 0, 1, vertexBuffers, offsets);
+	//
+	//vkCmdDraw(m_CommandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
+}
+
+void Shader::End() const
+{
+	if (vkEndCommandBuffer(m_CommandBuffer) != VK_SUCCESS)
+		throw std::runtime_error("failed to record command buffer!");
+}
+
+void Shader::Reset() const
+{
+	vkResetCommandBuffer(m_CommandBuffer, /*VkCommandBufferResetFlagBits*/ 0);
+}
+
+uint32_t Shader::GetHash() const
+{
+	return m_Hash;
+}
+
+uint32_t Shader::CalcHash(const std::string& vertex, const std::string& fragment)
+{
+	uint32_t hash{ 0 };
+	for (const char character : (vertex + fragment).c_str())
+		hash += static_cast<uint32_t>(character);
+
+	return hash;
 }
 
 VkShaderModule Shader::CreateShaderModule(const VkDevice& device, const std::vector<char>& code) const

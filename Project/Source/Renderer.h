@@ -2,7 +2,7 @@
 #include <vector>
 
 #include "vulkan/vulkan_core.h"
-#include "vulkanbase/Structs.h"
+#include "Structs.h"
 
 class Renderer final
 {
