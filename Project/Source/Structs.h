@@ -53,3 +53,9 @@ struct QueueFamilyIndices {
 		return queueFamily.has_value() && presentFamily.has_value();
 	}
 };
+
+struct SwapChainSupportDetails {
+	VkSurfaceCapabilitiesKHR capabilities;
+	std::vector<VkSurfaceFormatKHR> formats;
+	std::vector<VkPresentModeKHR> presentModes;
+};

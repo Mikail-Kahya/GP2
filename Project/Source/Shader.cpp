@@ -34,7 +34,7 @@ void Shader::DestroyModules(const VkDevice& vkDevice)
 VkPipelineShaderStageCreateInfo Shader::CreateShaderStageInfo(const VkDevice& device, const std::string& fileName, VkShaderStageFlagBits stage) const
 {
 	const std::string path{ SHADER_FOLDER + fileName + EXTENSION };
-	std::vector<char> vertShaderCode = readFile(path);
+	std::vector<char> vertShaderCode = ReadFile(path);
 	VkShaderModule vertShaderModule = CreateShaderModule(device, vertShaderCode);
 
 	VkPipelineShaderStageCreateInfo vertShaderStageInfo{};

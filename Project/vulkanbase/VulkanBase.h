@@ -21,19 +21,8 @@
 #include "Source/Renderer.h"
 
 
-const std::vector<const char*> validationLayers = {
-	"VK_LAYER_KHRONOS_validation"
-};
 
-const std::vector<const char*> deviceExtensions = {
-	VK_KHR_SWAPCHAIN_EXTENSION_NAME
-};
 
-struct SwapChainSupportDetails {
-	VkSurfaceCapabilitiesKHR capabilities;
-	std::vector<VkSurfaceFormatKHR> formats;
-	std::vector<VkPresentModeKHR> presentModes;
-};
 
 class VulkanBase {
 public:
@@ -56,13 +45,13 @@ private:
 		createLogicalDevice();
 
 		// week 04 
-		createSwapChain();
-		createImageViews();
+		//createSwapChain();
+		//createImageViews();
 		
 		// week 03
 		m_Shader.Initialize(device);
-		createRenderPass();
-		createGraphicsPipeline();
+		//createRenderPass();
+		//createGraphicsPipeline();
 		createFrameBuffers();
 		// week 02
 		renderer.Init(physicalDevice, surface, device, renderPass, swapChainFramebuffers, swapChainExtent, graphicsPipeline);
@@ -114,12 +103,6 @@ private:
 		glfwTerminate();
 	}
 
-	void createSurface() {
-		if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create window surface!");
-		}
-	}
-
 	Shader m_Shader{"shader", "shader"};
 	Renderer renderer{};
 
@@ -149,11 +132,6 @@ private:
 	// Week 04
 	// Swap chain and image view support
 
-	VkSwapchainKHR swapChain;
-	std::vector<VkImage> swapChainImages;
-	VkFormat swapChainImageFormat;
-	VkExtent2D swapChainExtent;
-
 	std::vector<VkImageView> swapChainImageViews;
 
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
@@ -162,17 +140,6 @@ private:
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 	void createSwapChain();
 	void createImageViews();
-
-	// Week 05 
-	// Logical and physical device
-
-	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-	VkQueue graphicsQueue;
-	VkQueue presentQueue;
-	
-	void pickPhysicalDevice();
-	bool isDeviceSuitable(VkPhysicalDevice device);
-	void createLogicalDevice();
 
 	// Week 06
 	// Main initialization
@@ -195,8 +162,5 @@ private:
 	void createSyncObjects();
 	void drawFrame();
 
-	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
-		std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
-		return VK_FALSE;
-	}
+	
 };
